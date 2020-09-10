@@ -18,44 +18,63 @@ namespace MovieLibrary
             while (true)
             {
                 //Scope - lifetime of a variable : starts at declaration and continues until end of current scope
-                char choice = DisplayMenu();
-                if (choice == 'Q')
-                    return;
-                else if (choice == 'A')
-                    AddMovie();
-            };
+                //char choice = DisplayMenu();
+                //if (choice == 'Q')
+                //    return;
+                //else if (choice == 'A')
+                //    AddMovie();
+                switch (DisplayMenu())
+                {
+                    case 'Q': return;
 
-            string title = "";
-            string description = "";
-            string rating = "";
-            int duration;
+                    case 'A': AddMovie(); break;
+
+                    case 'V': ViewMovie(); break;
+                }
+            };
         }
+
+        static string title = "";
+        static string description = "";
+        static string rating = "";
+        static int duration;
+        static bool isClassic;
 
         static void AddMovie ()
         {
             //Get title
             Console.WriteLine("Movie title: ");
             //string title = Console.ReadLine();
-            string title = ReadString(true);
+
+            //Type inferencing - compile time only
+            //Restrictions:
+            // 1. ONLY works with local variables
+            // 2. Variable must be initialized
+            // 3. (Sort of) Cannot figure out type or it is wrong
+            //string title = ReadString(true);
+            //int title2 = "";
+            title = ReadString(true); //string title = ReadString(true);
+
+            //title = 10;
 
             //Get description
             Console.WriteLine("Description (optional): ");
             //string description = Console.ReadLine();
-            string description = ReadString(false);
+            description = ReadString(false);
 
             //Get rating
             Console.WriteLine("Rating: ");
             //string rating = Console.ReadLine();
-            string rating = ReadString(false);
+            rating = ReadString(false);
 
             //Get duration
             Console.WriteLine("Duration (in minutes): ");
             //string duration = Console.ReadLine();
-            int duration = ReadInt32(0);
+            duration = ReadInt32(0);
 
             //Get is classic
             Console.WriteLine("Is Classic (Y/N)? ");
-            string isClassic = Console.ReadLine();
+            isClassic = ReadBoolean();
         }
 
         static char DisplayMenu ()
@@ -69,6 +88,7 @@ namespace MovieLibrary
                 Console.WriteLine("=================");
 
                 Console.WriteLine("A)dd Movie");
+                Console.WriteLine("V)iew Movie");
                 Console.WriteLine("Q)uit");
 
                 //Get input from user
@@ -81,6 +101,8 @@ namespace MovieLibrary
                     return 'Q';
                 else if (value == "A")
                     return 'A';
+                else if (value == "V")
+                    return 'V';
 
                 DisplayError("Invalid option");
             } while (true);
@@ -96,10 +118,69 @@ namespace MovieLibrary
             Console.ResetColor();
         }
 
+        static bool ReadBoolean ()
+        {
+            do
+            {
+                //Read as string
+                string value = Console.ReadLine();
+
+                //Not useful because of how it is parsed
+                //Boolean.TryParse(value, out bool result)
+
+                // switch - replacement for if-else-if WHEN
+                //  Each condition is against same variable
+                //  AND equality
+                // switch (E)
+                // {
+                //   case*
+                //   [default]
+                // }
+                // case    ::= case E : S*
+                // default ::= default : S*
+                //if (value == "Y")
+                //   return true;
+                //else if (value == "N")
+                //    return false;
+                //else
+                //    S;
+                // C++ DIFFERENCES
+                //   1. No fallthrough case E: S; break; case E2: S;
+                //   2. Any expression type is allowed
+                //   3. Case labels must be unique and compile time constants
+                //   4. Multiple statements are allowed
+                switch (value)
+                {
+                    case "X": Console.WriteLine("Wrong value"); break;
+
+                    case "Y":                   //If case statement empty (including semicolon) then fallthrough
+                    case "y": return true;
+
+                    case "N":
+                    case "n": return false;
+
+                    case "A":
+                    {
+                        //Use block statement for more than 1 statement
+                        Console.WriteLine("Wrong value");
+                        Console.WriteLine("Wrong value again");
+                        break;
+                    }
+
+                    default: break; //if nothing else
+                };
+
+                DisplayError("Invalid option");
+            } while (true);
+        }
+
+        //Reads an integer
         static int ReadInt32 ()
         {
             return ReadInt32(Int32.MinValue);
         }
+
+        //Reads an integer with a minimum value
         static int ReadInt32 ( int minimumValue )
         {
             do
@@ -118,9 +199,16 @@ namespace MovieLibrary
                 // Single.Parse/TryParse
                 // Boolean.Parse/TryParse
                 // Int16.Parse/TryParse
-                int result;
-                if (Int32.TryParse(value, out result) && result >= minimumValue)
+
+                //Inline variable declaration - out parameters only
+                //int result;
+                if (Int32.TryParse(value, out var result) && result >= minimumValue)
                     return result;
+
+                //Terminates loop
+                // break;
+                //Terminate the iteration
+                // continue;
 
                 if (minimumValue != Int32.MinValue)  //Int32.MaxValue
                     DisplayError("Value must be at least " + minimumValue); //String concatentation
@@ -128,6 +216,43 @@ namespace MovieLibrary
                     DisplayError("Must be integral value");
             } while (true);
         }
+
+        static void ViewMovie ()
+        {
+            Console.WriteLine(title);
+
+            //TODO: Description if available
+            Console.WriteLine(" " + description);
+
+            //TODO: Rating if available
+            Console.WriteLine(" " + rating);
+
+            Console.WriteLine(duration);
+
+            Console.WriteLine(isClassic);
+
+
+        }
+
+        //Arithmetic (unary)
+        //  +E
+        //  -E
+
+        //Arithmetic (binary) - type coercion
+        // addition 10 + 12
+        // subtraction 123 - 110.4 (double)
+        // multiplication 10 * 20
+        // division 30 / 3
+        // modulus 7 % 4 => 3 (remainder), only works with integrals
+
+        //int division problem
+        // 10 / 3 => int / int => int = 3
+        // 10.0 / 3 => double / int => double = 3.33
+        // (double) 10 / 3 => double / int
+
+        // typecast => (T)E
+        // not allowed => (string) 10, (int) "Hello", (int) 10.5
+
         //Logical operators
         // NOT = !E : boolean
         // AND => E && E : boolean
@@ -152,6 +277,32 @@ namespace MovieLibrary
 
                 DisplayError("Value is required");
             } while (true);
+        }
+
+        #region Demoing Language Features
+
+        static void FunWithStrings ()
+        {
+            //5 characters in it, takes up 10 bytes
+            // C++ difference: no NULL
+            // Escape sequencce begins with \ and is followed by generally 1 character, only works in literals
+            //   \n - newline
+            //   \t - tab
+            //   \" = "
+            //   \' = ' (char literal)
+            //   \\ - \
+            //   \xHH - hex equivalent \x0A
+            var name = "Bob\c"; //Compiler warning - Bobc
+            var message = "Hello \"Bob\"\nWorld";
+
+            //File paths - always escape sequences
+            var filePath = "C:\\Temp\\test.pdf"; //C:\Test\test.pdf
+            var filePath2 = @"C:\Temp\test.pdf"; //Verbatim string
+
+            Console.WriteLine("\u00a7Lots of things");
+
+            //TODO: null and empty string
+
         }
 
         private static void FunWithVariable ()
@@ -266,5 +417,7 @@ namespace MovieLibrary
             string name = "Bob";
             string empty = "";
         }
+
+        #endregion
     }
 }
