@@ -393,6 +393,7 @@ namespace MovieLibrary
 
             // Can be null
             string nullString = null;
+            //nullString.ToUpper(); //Will crash
             var areEqual3 = emptyString == nullString; //false
             //var willCrash = nullString.Length == 0;    //Will crash - BAD
             var willNotBeEqual = String.Compare(emptyString, null) == 0;
