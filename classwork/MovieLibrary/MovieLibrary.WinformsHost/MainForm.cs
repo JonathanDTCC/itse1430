@@ -21,9 +21,29 @@ namespace MovieLibrary.WinformsHost
         {
             InitializeComponent();
 
+            // Type - Movie
+            // Variable - movie
+            // Value - instance of an object
             Movie movie;
+            movie = new Movie(); //Create and instance ::= new T()
+
+            //label1.Text = "A label";
+
+            //var movie2 = new Movie(); //New instance
+
+            //member access operator ::=  E . M
+            movie.Name = "Jaws";
+            //var str = movie.description;
+
+            toolStripMenuItem5.Click += OnMovieAdd;
         }
 
+        private void OnMovieAdd ( object sender, EventArgs e )
+        {
+            var form = new MovieForm();
+
+            form.ShowDialog();
+        }
     }
 }
 
