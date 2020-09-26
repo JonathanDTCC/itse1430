@@ -16,11 +16,11 @@ namespace Budget
             {
                 switch (DisplayMenu())
                 {
-                    case 'Q': return;
-
                     case 'W': WithdrawBalance(); break;
 
                     case 'D': DepositBalance(); break;
+
+                    case 'Q': ConfirmQuit(); break;
                 }
             }
         }
@@ -40,7 +40,7 @@ namespace Budget
         {
             do
             {
-                Console.WriteLine("Account Info");
+                Console.WriteLine("\nAccount Info");
                 Console.WriteLine("============");
 
                 Console.WriteLine("Account Name: " + s_accountName);
@@ -62,6 +62,26 @@ namespace Budget
                     return 'Q';
 
                 DisplayError("Invalid option");
+            } while (true);
+        }
+        static void ConfirmQuit()
+        {
+            do
+            {
+                Console.WriteLine("\nAre you sure you want to quit?");
+                Console.WriteLine("============");
+
+                Console.WriteLine("Y)es");
+                Console.WriteLine("N)o");
+
+                string value = Console.ReadLine();
+
+                if (String.Compare(value, "Y", StringComparison.CurrentCultureIgnoreCase) == 0)
+                    Environment.Exit(0);
+                else if (String.Compare(value, "N", StringComparison.CurrentCultureIgnoreCase) == 0)
+                    return;
+
+                DisplayError("Invalid Option");
             } while (true);
         }
         static void WithdrawBalance()
