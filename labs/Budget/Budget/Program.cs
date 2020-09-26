@@ -4,6 +4,7 @@
  * Lab 1
  */
 using System;
+using System.Globalization;
 
 namespace Budget
 {
@@ -16,9 +17,9 @@ namespace Budget
             {
                 switch (DisplayMenu())
                 {
-                    case 'W': WithdrawBalance(); break;
-
                     case 'D': DepositBalance(); break;
+
+                    case 'W': WithdrawBalance(); break;
 
                     case 'Q': ConfirmQuit(); break;
                 }
@@ -48,8 +49,9 @@ namespace Budget
                 Console.WriteLine("Current Balance: " + s_balance.ToString("C"));
                 Console.WriteLine("===============================");
 
-                Console.WriteLine("W)ithdraw Money");
+
                 Console.WriteLine("D)eposit Money");
+                Console.WriteLine("W)ithdraw Money");
                 Console.WriteLine("Q)uit");
 
                 string value = Console.ReadLine();
@@ -91,9 +93,44 @@ namespace Budget
 
         static void DepositBalance()
         {
-            Console.WriteLine("Deposit");
-        }
+            Console.WriteLine("\nDepositing Money");
+            Console.WriteLine("================");
 
+            Console.WriteLine("Enter the amount to deposit");
+            decimal deposit = ReadBalance(0);
+            Console.WriteLine("Enter reason for deposit");
+            string reason = ReadString(true);
+            Console.WriteLine("Enter a category (optional)");
+            string category = ReadString(false);
+            Console.WriteLine("Enter date of deposit");
+            string date = ReadDate("MM/dd/yyyy");
+
+            s_balance += deposit;
+            Console.WriteLine("\nDeposit was succesful");
+            Console.WriteLine("Amount: " + deposit.ToString("C"));
+            Console.WriteLine("For: " + reason);
+            if (String.IsNullOrEmpty(category))
+                category = "Unspecified";
+            Console.WriteLine("Category: " + category);
+            Console.WriteLine("Date: " + date);
+
+            Console.WriteLine("\nBalance is now " + s_balance.ToString("C"));
+
+            return;
+        }
+        static string ReadDate(string format)
+        {
+            do
+            {
+                Console.WriteLine("Enter deposit date in format " + format);
+                string userDate = Console.ReadLine();
+
+                if (DateTime.TryParseExact(userDate, format, DateTimeFormatInfo.InvariantInfo, DateTimeStyles.None, out var parsedDate))
+                    return userDate;
+
+                DisplayError("Date must be valid and in the format MM/dd/yyyy");
+            } while (true);
+        }
         static string ReadString(bool required)
         {
             do
