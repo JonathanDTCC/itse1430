@@ -88,16 +88,38 @@ namespace Budget
         }
         static void WithdrawBalance()
         {
-            Console.WriteLine("Withdrawing");
-        }
+            Console.WriteLine("\nWithdrawing Money");
+            Console.WriteLine("================");
 
+            Console.WriteLine("Enter the amount to withdraw");
+            decimal withdrawAmount = ReadWithdraw(0);
+            Console.WriteLine("Enter reason for withdrawal");
+            string reason = ReadString(true);
+            Console.WriteLine("Enter a category (optional)");
+            string category = ReadString(false);
+            Console.WriteLine("Enter date of withdrawal");
+            string date = ReadDate("MM/dd/yyyy");
+
+            s_balance -= withdrawAmount;
+            Console.WriteLine("\nWithdrawal was succesful");
+            Console.WriteLine("Amount: " + withdrawAmount.ToString("C"));
+            Console.WriteLine("For: " + reason);
+            if (String.IsNullOrEmpty(category))
+                category = "Unspecified";
+            Console.WriteLine("Category: " + category);
+            Console.WriteLine("Date: " + date);
+
+            Console.WriteLine("\nBalance is now " + s_balance.ToString("C"));
+
+            return;
+        }
         static void DepositBalance()
         {
             Console.WriteLine("\nDepositing Money");
             Console.WriteLine("================");
 
             Console.WriteLine("Enter the amount to deposit");
-            decimal deposit = ReadBalance(0);
+            decimal depositAmount = ReadBalance(0);
             Console.WriteLine("Enter reason for deposit");
             string reason = ReadString(true);
             Console.WriteLine("Enter a category (optional)");
@@ -105,9 +127,9 @@ namespace Budget
             Console.WriteLine("Enter date of deposit");
             string date = ReadDate("MM/dd/yyyy");
 
-            s_balance += deposit;
+            s_balance += depositAmount;
             Console.WriteLine("\nDeposit was succesful");
-            Console.WriteLine("Amount: " + deposit.ToString("C"));
+            Console.WriteLine("Amount: " + depositAmount.ToString("C"));
             Console.WriteLine("For: " + reason);
             if (String.IsNullOrEmpty(category))
                 category = "Unspecified";
@@ -128,7 +150,7 @@ namespace Budget
                 if (DateTime.TryParseExact(userDate, format, DateTimeFormatInfo.InvariantInfo, DateTimeStyles.None, out var parsedDate))
                     return userDate;
 
-                DisplayError("Date must be valid and in the format MM/dd/yyyy");
+                DisplayError("Date must be valid and in the format " + format);
             } while (true);
         }
         static string ReadString(bool required)
@@ -175,6 +197,23 @@ namespace Budget
                     DisplayError("Value must be integral value");
                 else
                     DisplayError("Value must be at least $" + minValue);
+            } while (true);
+        }
+        static decimal ReadWithdraw(decimal minValue)
+        {
+            do
+            {
+                string value = Console.ReadLine();
+
+                if (Decimal.TryParse(value, out var result) && result > minValue && result <= s_balance)
+                    return result;
+                else if (!Decimal.TryParse(value, out result))
+                    DisplayError("Value must be integral value");
+                else if (result < minValue)
+                    DisplayError("Value must be at least $" + minValue);
+                else
+                    DisplayError("Insufficient funds");
+
             } while (true);
         }
         static void DisplayError(string message)
