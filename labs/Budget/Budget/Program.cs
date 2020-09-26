@@ -12,10 +12,21 @@ namespace Budget
         static void Main(string[] args)
         {
             GetStartingInfo();
+            while(true)
+            {
+                switch (DisplayMenu())
+                {
+                    case 'Q': return;
+
+                    case 'W': WithdrawBalance(); break;
+
+                    case 'D': DepositBalance(); break;
+                }
+            }
         }
         static string s_accountName = "";
         static string s_accountNumber = "";
-        static decimal s_startingBalance = 0;
+        static decimal s_balance = 0;
         static void GetStartingInfo()
         {
             Console.WriteLine("Enter account nickname");
@@ -23,8 +34,46 @@ namespace Budget
             Console.WriteLine("Enter account number");
             s_accountNumber = ReadNumber();
             Console.WriteLine("Enter starting balance");
-            s_startingBalance = ReadBalance(0);
+            s_balance = ReadBalance(0);
         }
+        static char DisplayMenu()
+        {
+            do
+            {
+                Console.WriteLine("Account Info");
+                Console.WriteLine("============");
+
+                Console.WriteLine("Account Name: " + s_accountName);
+                Console.WriteLine("Account Number: " + s_accountNumber);
+                Console.WriteLine("Current Balance: " + s_balance.ToString("C"));
+                Console.WriteLine("===============================");
+
+                Console.WriteLine("W)ithdraw Money");
+                Console.WriteLine("D)eposit Money");
+                Console.WriteLine("Q)uit");
+
+                string value = Console.ReadLine();
+
+                if (String.Compare(value, "W", StringComparison.CurrentCultureIgnoreCase) == 0)
+                    return 'W';
+                else if (String.Compare(value, "D", StringComparison.CurrentCultureIgnoreCase) == 0)
+                    return 'D';
+                else if (String.Compare(value, "Q", StringComparison.CurrentCultureIgnoreCase) == 0)
+                    return 'Q';
+
+                DisplayError("Invalid option");
+            } while (true);
+        }
+        static void WithdrawBalance()
+        {
+            Console.WriteLine("Withdrawing");
+        }
+
+        static void DepositBalance()
+        {
+            Console.WriteLine("Deposit");
+        }
+
         static string ReadString(bool required)
         {
             do
