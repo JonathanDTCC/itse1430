@@ -1,4 +1,4 @@
-//Using directive - imports all identifiers from a namespace
+//using directive - imports all identifiers from a namespace
 using System;
 using System.Windows.Forms;
 //using System.Windows.Forms;
@@ -19,7 +19,7 @@ namespace MovieLibrary.WinformsHost
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());
-            //Application.Run(new MovieLibrary.WinformsHost.MainForm()); //In the same namespace
+            //Application.Run(new MovieLibrary.WinformsHost.MainForm());
         }
     }
 }
